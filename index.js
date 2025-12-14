@@ -31,7 +31,9 @@ app.post("/leaderboard", (req, res) => {
     const leaderboard = JSON.parse(data);
     leaderboard.push({ name, score });
     leaderboard.sort((a, b) => b.score - a.score);
-    fs.writeFile("leaderboard.json", JSON.stringify(leaderboard));
+    fs.writeFile("leaderboard.json", JSON.stringify(leaderboard), () => {
+        // noop
+    });
     res.json(leaderboard);
   });
 });
