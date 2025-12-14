@@ -22,7 +22,7 @@ app.post("/leaderboard", (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
 
   const { name, score } = req.query;
-  
+
   if (!name || !score) {
     res.sendStatus(400);
   }
@@ -31,6 +31,7 @@ app.post("/leaderboard", (req, res) => {
     const leaderboard = JSON.parse(data);
     leaderboard.push({ name, score });
     leaderboard.sort((a, b) => b.score - a.score);
+    fs.writeFile("leaderboard.json", JSON.stringify(leaderboard));
     res.json(leaderboard);
   });
 });
