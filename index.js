@@ -26,6 +26,7 @@ app.post("/leaderboard", (req, res) => {
 
   if (!name || !score) {
     res.sendStatus(400);
+    return;
   }
 
   fs.readFile("/var/data/leaderboard.json", "utf8", (err, data) => {
