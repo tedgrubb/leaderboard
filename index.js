@@ -40,6 +40,30 @@ app.post("/leaderboard", (req, res) => {
   });
 });
 
+app.get("/seed", (_req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  fs.readFile("leaderboard.json", "utf8", (err, data) => {
+    const leaderboard = JSON.parse(data);
+    leaderboard.sort((a, b) => b.score - a.score);
+    fs.writeFile("/var/data/leaderboard.json", JSON.stringify(leaderboard), () => {
+        // noop
+      console.log("Data seeded at /var/data/leaderboard.json");
+    });
+    res.json(leaderboard);
+  });
+});
+
+app.get("/persisted_leaderboard", (_req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  fs.readFile("/var/data/leaderboard.json", "utf8", (err, data) => {
+    const leaderboard = JSON.parse(data);
+    leaderboard.sort((a, b) => b.score - a.score);
+    res.json(leaderboard);
+  });
+});
+
 
 // Start the server and listen on the defined port
 app.listen(port, () => {
