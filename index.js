@@ -11,10 +11,11 @@ app.get("/", (req, res) => {
 app.get("/leaderboard", (_req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
 
-  fs.readFile("leaderboard.json", "utf8", (err, data) => {
+  fs.readFile("/var/data/leaderboard.json", "utf8", (err, data) => {
     const leaderboard = JSON.parse(data);
     leaderboard.sort((a, b) => b.score - a.score);
     res.json(leaderboard);
+    console.log("Leaderboard was requested");
   });
 });
 
@@ -27,37 +28,13 @@ app.post("/leaderboard", (req, res) => {
     res.sendStatus(400);
   }
 
-  fs.readFile("leaderboard.json", "utf8", (err, data) => {
+  fs.readFile("/var/data/leaderboard.json", "utf8", (err, data) => {
     const leaderboard = JSON.parse(data);
     leaderboard.push({ name, score });
     leaderboard.sort((a, b) => b.score - a.score);
-    fs.writeFile("leaderboard.json", JSON.stringify(leaderboard), () => {
-        // noop
-    });
-    res.json(leaderboard);
-  });
-});
-
-app.get("/seed", (_req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-
-  fs.readFile("leaderboard.json", "utf8", (err, data) => {
-    const leaderboard = JSON.parse(data);
-    leaderboard.sort((a, b) => b.score - a.score);
     fs.writeFile("/var/data/leaderboard.json", JSON.stringify(leaderboard), () => {
-        // noop
-      console.log("Data seeded at /var/data/leaderboard.json");
+      console.log("New high score posted", { name, score });
     });
-    res.json(leaderboard);
-  });
-});
-
-app.get("/persisted_leaderboard", (_req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-
-  fs.readFile("/var/data/leaderboard.json", "utf8", (err, data) => {
-    const leaderboard = JSON.parse(data);
-    leaderboard.sort((a, b) => b.score - a.score);
     res.json(leaderboard);
   });
 });
